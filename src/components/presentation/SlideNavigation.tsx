@@ -1,7 +1,10 @@
-import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu, Smartphone, Tablet, Monitor, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+
+type DeviceView = 'mobile' | 'tablet' | 'desktop';
 
 interface SlideNavigationProps {
   currentSlide: number;
@@ -10,7 +13,15 @@ interface SlideNavigationProps {
   onNavigate: (index: number) => void;
   onPrev: () => void;
   onNext: () => void;
+  deviceView?: DeviceView;
+  onDeviceViewChange?: (view: DeviceView) => void;
 }
+
+const deviceViews: { id: DeviceView; icon: typeof Smartphone; label: string; width: string }[] = [
+  { id: 'mobile', icon: Smartphone, label: 'Mobile', width: '375px' },
+  { id: 'tablet', icon: Tablet, label: 'iPad', width: '768px' },
+  { id: 'desktop', icon: Monitor, label: 'Desktop', width: '100%' },
+];
 
 export function SlideNavigation({
   currentSlide,
@@ -19,6 +30,8 @@ export function SlideNavigation({
   onNavigate,
   onPrev,
   onNext,
+  deviceView = 'desktop',
+  onDeviceViewChange,
 }: SlideNavigationProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-t border-border">
@@ -54,8 +67,42 @@ export function SlideNavigation({
           </SheetContent>
         </Sheet>
 
-        {/* Center: Progress */}
+        {/* Center: Device View Toggle + Progress */}
         <div className="flex items-center gap-4">
+          {/* Device View Icons */}
+          <div className="hidden sm:flex items-center gap-1 bg-muted/50 rounded-lg p-1">
+            {deviceViews.map((view) => {
+              const Icon = view.icon;
+              const isActive = deviceView === view.id;
+              return (
+                <Tooltip key={view.id}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={isActive ? 'secondary' : 'ghost'}
+                      size="icon"
+                      className={cn(
+                        'h-8 w-8 relative',
+                        isActive && 'bg-primary text-primary-foreground hover:bg-primary/90'
+                      )}
+                      onClick={() => onDeviceViewChange?.(view.id)}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {isActive && (
+                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-secondary rounded-full flex items-center justify-center">
+                          <Check className="h-2 w-2 text-white" />
+                        </span>
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>{view.label}</p>
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
+          </div>
+
+          {/* Progress Dots */}
           <div className="flex gap-1.5">
             {Array.from({ length: totalSlides }).map((_, index) => (
               <button
@@ -70,7 +117,7 @@ export function SlideNavigation({
               />
             ))}
           </div>
-          <span className="text-sm text-muted-foreground hidden sm:block">
+          <span className="text-sm text-muted-foreground hidden md:block">
             {currentSlide + 1} / {totalSlides}
           </span>
         </div>
