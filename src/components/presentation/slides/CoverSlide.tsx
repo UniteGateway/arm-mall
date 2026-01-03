@@ -34,7 +34,7 @@ export function CoverSlide({ isActive }: CoverSlideProps) {
         </div>
         
         <div className="flex flex-wrap justify-center gap-4 mb-12 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          {['Policy-Aligned', 'Stable Returns', 'Green Infrastructure', '30+ Years Life'].map((tag) => (
+          {['Captive Power', '100% Equity', 'Own Land', 'Zero Grid Dependency', '30+ Years Life'].map((tag) => (
             <span key={tag} className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-sm font-medium text-white">
               {tag}
             </span>

@@ -1,11 +1,16 @@
 export interface FinancialInputs {
   projectCost: number; // in lakhs
-  tariffRate: number; // per unit
+  tariffRate: number; // per unit (for Open Access)
   equityPercent: number;
   interestRate: number;
   loanTenureMonths: number;
   oaChargesMode: 'estimated' | 'regulatory';
   oaChargesEstimate: number; // per unit
+  // Captive specific
+  currentGridTariff: number; // current electricity cost per unit
+  monthlyConsumption: number; // monthly electricity bill in lakhs
+  isCaptive: boolean; // captive or open access
+  isOwnLand: boolean; // own land or purchased
 }
 
 export interface CalculatedMetrics {
@@ -40,6 +45,12 @@ export interface CalculatedMetrics {
     interest: number;
     closingBalance: number;
   }>;
+  // Captive specific
+  currentAnnualBill: number; // current annual electricity cost
+  annualSavings: number; // savings from solar
+  monthlySavings: number; // monthly savings
+  lifetimeSavings: number; // 30 year savings
+  solarCostPerUnit: number; // effective cost per unit from solar
 }
 
 export interface Scenario {
@@ -66,11 +77,16 @@ export interface SlideProps {
 export const DEFAULT_INPUTS: FinancialInputs = {
   projectCost: 600,
   tariffRate: 4.75,
-  equityPercent: 25,
+  equityPercent: 100, // 100% equity - no loan
   interestRate: 10.25,
-  loanTenureMonths: 78,
+  loanTenureMonths: 0, // no loan
   oaChargesMode: 'regulatory',
   oaChargesEstimate: 0.85,
+  // Captive defaults for ARM Mall
+  currentGridTariff: 8, // ₹8/unit current tariff
+  monthlyConsumption: 3, // ₹3 lakhs/month
+  isCaptive: true, // captive power plant
+  isOwnLand: true, // own land
 };
 
 export const COST_BREAKDOWN = [
@@ -84,9 +100,9 @@ export const COST_BREAKDOWN = [
 export const PROJECT_SPECS = {
   capacity: 1.5,
   capacityUnit: 'MW',
-  landRequirement: '5-6 Acres',
+  landRequirement: 'Own Land',
   location: 'ARM Mall, Hyderabad',
-  model: 'Open Access / Third-Party PPA',
+  model: 'Captive Power Plant',
   projectLife: '30+ Years',
   projectLifeYears: 30,
   unitsPerMW: 1600000,
