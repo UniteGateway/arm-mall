@@ -1,13 +1,22 @@
 import { MapPin, Zap, Building2 } from 'lucide-react';
 import { SlideContainer } from '../SlideContainer';
-import { PROJECT_SPECS } from '@/types/presentation';
+import { PROJECT_SPECS, FinancialInputs } from '@/types/presentation';
 import uniteSolarLogo from '@/assets/unite-solar-logo.png';
 
 interface CoverSlideProps {
   isActive: boolean;
+  inputs?: FinancialInputs;
 }
 
-export function CoverSlide({ isActive }: CoverSlideProps) {
+export function CoverSlide({ isActive, inputs }: CoverSlideProps) {
+  const isCaptive = inputs?.isCaptive ?? true;
+  
+  const captiveTags = ['Captive Power', '100% Equity', 'Own Land', 'Zero Grid Dependency', '30+ Years Life'];
+  const openAccessTags = ['Open Access', 'Third-Party PPA', 'Policy-Aligned', 'Stable Returns', '30+ Years Life'];
+  
+  const tags = isCaptive ? captiveTags : openAccessTags;
+  const model = isCaptive ? 'Captive Power Plant' : 'Open Access / Third-Party PPA';
+
   return (
     <SlideContainer isActive={isActive} variant="hero">
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-180px)] text-center">
@@ -34,7 +43,7 @@ export function CoverSlide({ isActive }: CoverSlideProps) {
         </div>
         
         <div className="flex flex-wrap justify-center gap-4 mb-12 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          {['Captive Power', '100% Equity', 'Own Land', 'Zero Grid Dependency', '30+ Years Life'].map((tag) => (
+          {tags.map((tag) => (
             <span key={tag} className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-sm font-medium text-white">
               {tag}
             </span>
@@ -48,7 +57,7 @@ export function CoverSlide({ isActive }: CoverSlideProps) {
           </div>
           <div className="flex items-center gap-2">
             <Zap className="w-5 h-5" />
-            <span>{PROJECT_SPECS.model}</span>
+            <span>{model}</span>
           </div>
         </div>
         

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { FinancialInputs, DEFAULT_INPUTS } from '@/types/presentation';
 import { useFinancialCalculator } from '@/hooks/useFinancialCalculator';
 import { useScenarios } from '@/hooks/useScenarios';
@@ -10,8 +10,14 @@ import { ProjectSnapshotSlide } from './slides/ProjectSnapshotSlide';
 import { SavingsAnalysisSlide } from './slides/SavingsAnalysisSlide';
 import { GenerationSlide } from './slides/GenerationSlide';
 import { CostBreakdownSlide } from './slides/CostBreakdownSlide';
+import { AdditionalChargesSlide } from './slides/AdditionalChargesSlide';
+import { DebtStructureSlide } from './slides/DebtStructureSlide';
+import { EMISummarySlide } from './slides/EMISummarySlide';
+import { OpenAccessSlide } from './slides/OpenAccessSlide';
+import { RevenueSlide } from './slides/RevenueSlide';
 import { DepreciationSlide } from './slides/DepreciationSlide';
 import { TaxBenefitsSlide } from './slides/TaxBenefitsSlide';
+import { LandAppreciationSlide } from './slides/LandAppreciationSlide';
 import { ProfitabilitySlide } from './slides/ProfitabilitySlide';
 import { ROISlide } from './slides/ROISlide';
 import { TurnkeyScopeSlide } from './slides/TurnkeyScopeSlide';
@@ -20,11 +26,19 @@ import { cn } from '@/lib/utils';
 
 type DeviceView = 'mobile' | 'tablet' | 'desktop';
 
-// Captive Power Plant focused slides (no loan, own land)
-const SLIDE_NAMES = [
+// Captive Power Plant slides (own consumption, typically 100% equity)
+const CAPTIVE_SLIDE_NAMES = [
   'Cover', 'Dashboard', 'Project Snapshot', 'Savings Analysis', 'Generation',
   'Cost Breakup', 'Depreciation', 'Tax Benefits', 'Profitability', 
   'ROI & Payback', 'Turnkey Scope', 'Conclusion'
+];
+
+// Open Access slides (third-party PPA, with loan structure)
+const OPEN_ACCESS_SLIDE_NAMES = [
+  'Cover', 'Dashboard', 'Project Snapshot', 'Generation', 'Cost Breakup',
+  'Additional Charges', 'Debt Structure', 'EMI Schedule', 'Open Access Charges',
+  'Revenue Estimation', 'Depreciation', 'Tax Benefits', 'Land Appreciation',
+  'Profitability', 'ROI & Breakeven', 'Turnkey Scope', 'Conclusion'
 ];
 
 const deviceWidths: Record<DeviceView, string> = {
@@ -40,16 +54,25 @@ export function Presentation() {
   const metrics = useFinancialCalculator(inputs);
   const { scenarios, saveScenario, deleteScenario, loadScenario } = useScenarios();
 
+  const slideNames = useMemo(() => 
+    inputs.isCaptive ? CAPTIVE_SLIDE_NAMES : OPEN_ACCESS_SLIDE_NAMES
+  , [inputs.isCaptive]);
+
   const handleInputChange = useCallback((changes: Partial<FinancialInputs>) => {
     setInputs((prev) => ({ ...prev, ...changes }));
   }, []);
 
   const handleReset = useCallback(() => setInputs(DEFAULT_INPUTS), []);
 
+  // Reset slide when mode changes
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [inputs.isCaptive]);
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'ArrowRight' || e.key === ' ') setCurrentSlide((p) => Math.min(p + 1, SLIDE_NAMES.length - 1));
+    if (e.key === 'ArrowRight' || e.key === ' ') setCurrentSlide((p) => Math.min(p + 1, slideNames.length - 1));
     if (e.key === 'ArrowLeft') setCurrentSlide((p) => Math.max(p - 1, 0));
-  }, []);
+  }, [slideNames.length]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -57,6 +80,50 @@ export function Presentation() {
   }, [handleKeyDown]);
 
   const slideProps = { inputs, metrics, onInputChange: handleInputChange, isActive: false };
+
+  // Render slides based on mode
+  const renderSlides = () => {
+    if (inputs.isCaptive) {
+      return (
+        <>
+          <CoverSlide isActive={currentSlide === 0} inputs={inputs} />
+          <DashboardSlide {...slideProps} isActive={currentSlide === 1} />
+          <ProjectSnapshotSlide {...slideProps} isActive={currentSlide === 2} />
+          <SavingsAnalysisSlide {...slideProps} isActive={currentSlide === 3} />
+          <GenerationSlide {...slideProps} isActive={currentSlide === 4} />
+          <CostBreakdownSlide {...slideProps} isActive={currentSlide === 5} />
+          <DepreciationSlide {...slideProps} isActive={currentSlide === 6} />
+          <TaxBenefitsSlide {...slideProps} isActive={currentSlide === 7} />
+          <ProfitabilitySlide {...slideProps} isActive={currentSlide === 8} />
+          <ROISlide {...slideProps} isActive={currentSlide === 9} />
+          <TurnkeyScopeSlide {...slideProps} isActive={currentSlide === 10} />
+          <ConclusionSlide {...slideProps} isActive={currentSlide === 11} />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <CoverSlide isActive={currentSlide === 0} inputs={inputs} />
+          <DashboardSlide {...slideProps} isActive={currentSlide === 1} />
+          <ProjectSnapshotSlide {...slideProps} isActive={currentSlide === 2} />
+          <GenerationSlide {...slideProps} isActive={currentSlide === 3} />
+          <CostBreakdownSlide {...slideProps} isActive={currentSlide === 4} />
+          <AdditionalChargesSlide {...slideProps} isActive={currentSlide === 5} />
+          <DebtStructureSlide {...slideProps} isActive={currentSlide === 6} />
+          <EMISummarySlide {...slideProps} isActive={currentSlide === 7} />
+          <OpenAccessSlide {...slideProps} isActive={currentSlide === 8} />
+          <RevenueSlide {...slideProps} isActive={currentSlide === 9} />
+          <DepreciationSlide {...slideProps} isActive={currentSlide === 10} />
+          <TaxBenefitsSlide {...slideProps} isActive={currentSlide === 11} />
+          <LandAppreciationSlide {...slideProps} isActive={currentSlide === 12} />
+          <ProfitabilitySlide {...slideProps} isActive={currentSlide === 13} />
+          <ROISlide {...slideProps} isActive={currentSlide === 14} />
+          <TurnkeyScopeSlide {...slideProps} isActive={currentSlide === 15} />
+          <ConclusionSlide {...slideProps} isActive={currentSlide === 16} />
+        </>
+      );
+    }
+  };
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">
@@ -84,28 +151,17 @@ export function Presentation() {
         )}
         
         <div className="h-full overflow-hidden">
-          <CoverSlide isActive={currentSlide === 0} />
-          <DashboardSlide {...slideProps} isActive={currentSlide === 1} />
-          <ProjectSnapshotSlide {...slideProps} isActive={currentSlide === 2} />
-          <SavingsAnalysisSlide {...slideProps} isActive={currentSlide === 3} />
-          <GenerationSlide {...slideProps} isActive={currentSlide === 4} />
-          <CostBreakdownSlide {...slideProps} isActive={currentSlide === 5} />
-          <DepreciationSlide {...slideProps} isActive={currentSlide === 6} />
-          <TaxBenefitsSlide {...slideProps} isActive={currentSlide === 7} />
-          <ProfitabilitySlide {...slideProps} isActive={currentSlide === 8} />
-          <ROISlide {...slideProps} isActive={currentSlide === 9} />
-          <TurnkeyScopeSlide {...slideProps} isActive={currentSlide === 10} />
-          <ConclusionSlide {...slideProps} isActive={currentSlide === 11} />
+          {renderSlides()}
         </div>
       </div>
       
       <SlideNavigation
         currentSlide={currentSlide}
-        totalSlides={SLIDE_NAMES.length}
-        slideNames={SLIDE_NAMES}
+        totalSlides={slideNames.length}
+        slideNames={slideNames}
         onNavigate={setCurrentSlide}
         onPrev={() => setCurrentSlide((p) => Math.max(p - 1, 0))}
-        onNext={() => setCurrentSlide((p) => Math.min(p + 1, SLIDE_NAMES.length - 1))}
+        onNext={() => setCurrentSlide((p) => Math.min(p + 1, slideNames.length - 1))}
         deviceView={deviceView}
         onDeviceViewChange={setDeviceView}
       />
