@@ -7,16 +7,11 @@ import { FinancialInputsPanel } from './FinancialInputsPanel';
 import { CoverSlide } from './slides/CoverSlide';
 import { DashboardSlide } from './slides/DashboardSlide';
 import { ProjectSnapshotSlide } from './slides/ProjectSnapshotSlide';
+import { SavingsAnalysisSlide } from './slides/SavingsAnalysisSlide';
 import { GenerationSlide } from './slides/GenerationSlide';
 import { CostBreakdownSlide } from './slides/CostBreakdownSlide';
-import { AdditionalChargesSlide } from './slides/AdditionalChargesSlide';
-import { DebtStructureSlide } from './slides/DebtStructureSlide';
-import { EMISummarySlide } from './slides/EMISummarySlide';
-import { OpenAccessSlide } from './slides/OpenAccessSlide';
-import { RevenueSlide } from './slides/RevenueSlide';
 import { DepreciationSlide } from './slides/DepreciationSlide';
 import { TaxBenefitsSlide } from './slides/TaxBenefitsSlide';
-import { LandAppreciationSlide } from './slides/LandAppreciationSlide';
 import { ProfitabilitySlide } from './slides/ProfitabilitySlide';
 import { ROISlide } from './slides/ROISlide';
 import { TurnkeyScopeSlide } from './slides/TurnkeyScopeSlide';
@@ -25,11 +20,11 @@ import { cn } from '@/lib/utils';
 
 type DeviceView = 'mobile' | 'tablet' | 'desktop';
 
+// Captive Power Plant focused slides (no loan, own land)
 const SLIDE_NAMES = [
-  'Cover', 'Dashboard', 'Project Snapshot', 'Generation Assumptions', 'Cost Breakup',
-  'Additional Charges', 'Debt Structure', 'EMI Schedule', 'Open Access Charges',
-  'Revenue Estimation', 'Depreciation', 'Tax Benefits', 'Land Appreciation',
-  'Profitability', 'ROI & Breakeven', 'Turnkey Scope', 'Conclusion'
+  'Cover', 'Dashboard', 'Project Snapshot', 'Savings Analysis', 'Generation',
+  'Cost Breakup', 'Depreciation', 'Tax Benefits', 'Profitability', 
+  'ROI & Payback', 'Turnkey Scope', 'Conclusion'
 ];
 
 const deviceWidths: Record<DeviceView, string> = {
@@ -92,20 +87,15 @@ export function Presentation() {
           <CoverSlide isActive={currentSlide === 0} />
           <DashboardSlide {...slideProps} isActive={currentSlide === 1} />
           <ProjectSnapshotSlide {...slideProps} isActive={currentSlide === 2} />
-          <GenerationSlide {...slideProps} isActive={currentSlide === 3} />
-          <CostBreakdownSlide {...slideProps} isActive={currentSlide === 4} />
-          <AdditionalChargesSlide {...slideProps} isActive={currentSlide === 5} />
-          <DebtStructureSlide {...slideProps} isActive={currentSlide === 6} />
-          <EMISummarySlide {...slideProps} isActive={currentSlide === 7} />
-          <OpenAccessSlide {...slideProps} isActive={currentSlide === 8} />
-          <RevenueSlide {...slideProps} isActive={currentSlide === 9} />
-          <DepreciationSlide {...slideProps} isActive={currentSlide === 10} />
-          <TaxBenefitsSlide {...slideProps} isActive={currentSlide === 11} />
-          <LandAppreciationSlide {...slideProps} isActive={currentSlide === 12} />
-          <ProfitabilitySlide {...slideProps} isActive={currentSlide === 13} />
-          <ROISlide {...slideProps} isActive={currentSlide === 14} />
-          <TurnkeyScopeSlide {...slideProps} isActive={currentSlide === 15} />
-          <ConclusionSlide {...slideProps} isActive={currentSlide === 16} />
+          <SavingsAnalysisSlide {...slideProps} isActive={currentSlide === 3} />
+          <GenerationSlide {...slideProps} isActive={currentSlide === 4} />
+          <CostBreakdownSlide {...slideProps} isActive={currentSlide === 5} />
+          <DepreciationSlide {...slideProps} isActive={currentSlide === 6} />
+          <TaxBenefitsSlide {...slideProps} isActive={currentSlide === 7} />
+          <ProfitabilitySlide {...slideProps} isActive={currentSlide === 8} />
+          <ROISlide {...slideProps} isActive={currentSlide === 9} />
+          <TurnkeyScopeSlide {...slideProps} isActive={currentSlide === 10} />
+          <ConclusionSlide {...slideProps} isActive={currentSlide === 11} />
         </div>
       </div>
       

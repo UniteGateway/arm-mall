@@ -96,6 +96,11 @@ export function useScenarios() {
       loanTenureMonths: scenario.loan_tenure_months,
       oaChargesMode: scenario.oa_charges_mode as 'estimated' | 'regulatory',
       oaChargesEstimate: Number(scenario.oa_charges_estimate),
+      // Default captive values for loaded scenarios
+      currentGridTariff: 8,
+      monthlyConsumption: 3,
+      isCaptive: true,
+      isOwnLand: true,
     };
   };
 
